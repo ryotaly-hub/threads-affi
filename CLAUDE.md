@@ -21,11 +21,14 @@ Amazonアソシエイト用のThreads投稿内容を作成するアプリ
 ## ディレクトリ構造
 
 ```
-index.js              Express 本体
-routes/index.js       ルート定義
+index.js              Express 本体（public/ と assets/ を配信）
+routes/index.js       API（/api/config, /api/trends, /api/prompt, /api/posts）
+lib/claude.js         Claude Code（claude -p）呼び出し（売れ筋の Web 検索・投稿文の作成）
+public/               画面（index.html / style.css / app.js）
 test.sh               curl ベースの API テスト
 intent-interview.md   intent.md（作業の意図）を作るインタビューの指示
-docs/                 仕様・メモ・参考資料
+intent.md             作業の意図（5つの項目）
+docs/                 仕様・メモ・参考資料（投稿のひな型プロンプトもここ）
 assets/               画像などの素材
 ```
 
@@ -43,7 +46,7 @@ assets/               画像などの素材
 
 ## 秘密情報
 
-- なし
+- なし（AI は、このパソコンでログイン済みの Claude Code を `claude -p` で呼んで使う。Claude API のキーは使わない）
 
 ## 作業の意図（intent.md）
 
@@ -52,5 +55,9 @@ assets/               画像などの素材
 
 ## 注意事項
 
+- 投稿文は `docs/ひな型_スレッド投稿プロンプト.md` をそのまま使って作る。ひな型を直したら、画面の読み取り（`public/app.js` の `parsePatterns`）が出力形式に合っているか確かめる。
+- AI は Claude API ではなく Claude Code（`claude -p`）を子プロセスで呼ぶ。MCP・スキル・CLAUDE.md を読み込まない最小構成で呼ぶこと（読み込むと1回で数十万トークン消費する）。環境変数 `ANTHROPIC_API_KEY` は渡さない（渡すと従量課金の API で動くため）。
+- 売れ筋は Claude Code の WebSearch で調べる。Amazon のページのスクレイピングはしない（規約のため）。
+- `test.sh` は `CLAUDE_BIN=/nonexistent/claude` でサーバーを起動するため、AI は呼ばない。
 - 新しい依存関係の追加や、依頼範囲外のリファクタリングは避ける。
 - テストが実行できなかった場合は、その理由を明記する。

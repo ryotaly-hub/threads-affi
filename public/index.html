@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VANG SELECT Post draft</title>
+  <link rel="icon" href="/assets/logo.png">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <img src="/assets/logo.png" alt="VANG SELECT" class="logo">
+    <div>
+      <h1>VANG SELECT <span>Post draft</span></h1>
+      <p class="lead">売れ筋を調べて、Threads の紹介投稿を3パターン作る</p>
+    </div>
+  </header>
+
+  <div id="key-warning" class="notice" hidden>
+    Claude Code（<code>claude</code> コマンド）が見つからないため、売れ筋検索と投稿作成は使えません。Claude Code をインストールしてログインしてから、サーバーを起動し直してください（「プロンプトをコピー」は使えます）。
+  </div>
+
+  <main>
+    <section class="card" id="step-trends">
+      <h2><span class="num">1</span>Amazonでの売れ筋検索</h2>
+      <p class="hint">AI が Web 検索で、ニュースやトレンド記事から今売れているものを推し量ります（Amazon のページは読み取りません）。Claude Code で動くので、Claude の契約の使用量を消費します。1〜3分かかります。</p>
+
+      <h3>紹介商品のカテゴリ</h3>
+      <div class="chips" id="categories" role="radiogroup" aria-label="カテゴリ"></div>
+      <input type="text" id="category-other" class="other" placeholder="その他のカテゴリを入力（例：ペット用品）">
+
+      <label class="toggle">
+        <input type="checkbox" id="season" checked>
+        <span>季節を考慮する（今日の日付から、季節・行事で伸びているものを優先）</span>
+      </label>
+
+      <button class="primary" id="search-btn">売れ筋を調べる</button>
+      <div id="trends-status" class="status" aria-live="polite"></div>
+      <div id="trends-result"></div>
+    </section>
+
+    <section class="card" id="step-input">
+      <h2><span class="num">2</span>条件入力</h2>
+      <p class="hint">売れ筋レポートの「この商品で投稿を作る」を押すと自動で入ります。直接入力もできます。</p>
+      <form id="post-form"></form>
+      <div class="actions">
+        <button class="primary" id="generate-btn" type="submit" form="post-form">投稿を3パターン作る</button>
+        <button class="secondary" id="prompt-btn" type="button">プロンプトをコピー</button>
+      </div>
+      <div id="posts-status" class="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card" id="step-patterns">
+      <h2><span class="num">3</span>パターン表示</h2>
+      <div id="patterns"><p class="empty">まだ投稿はありません。</p></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>
