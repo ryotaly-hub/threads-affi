@@ -17,6 +17,14 @@ Amazonアソシエイト用のThreads投稿内容を作成するアプリ
   - **注意**: `test.sh` は最初にポート 3002 のプロセスを `kill -9` する。
   - 新しいエンドポイントを追加したら、`test.sh` に `assert_eq` を追加する。
 
+## スマホなど外から使う（Tailscale）
+
+1. Mac とスマホの両方に Tailscale を入れ、同じアカウントでログインする
+2. `.env` に `APP_PASSWORD` を入れて `npm start`（パスワードがあるときだけ、ほかの端末からの接続を受け付ける）
+3. スマホで `http://<Mac の Tailscale の IP>:3002/` を開き、パスワードを入れる（ユーザー名は何でもよい）
+
+Mac が起動していて、アプリが動いているときだけ使える。
+
 ## 資料の保存場所
 
 - `docs/` — 仕様・メモ・参考資料
@@ -24,7 +32,8 @@ Amazonアソシエイト用のThreads投稿内容を作成するアプリ
 
 ## 秘密情報
 
-- なし（AI は、このパソコンでログイン済みの Claude Code を `claude -p` で呼んで使う。Claude API のキーは使わない）
+- `APP_PASSWORD`（アプリのパスワード）。`.env.example` を `.env` にコピーして値を入れる。`npm start` が `.env` を読み込む。
+- AI は、このパソコンでログイン済みの Claude Code を `claude -p` で呼んで使う。Claude API のキーは使わない。
 
 ## 作り始める前に
 

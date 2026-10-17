@@ -77,6 +77,19 @@ assert_eq "POST /api/trends Claude Code 無し → 503" "503" "$res"
 res=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/not-found")
 assert_eq "GET /not-found status" "404" "$res"
 
+# --- パスワード保護（別ポートで APP_PASSWORD 付きのサーバーを起動） ---
+lsof -ti:3012 | xargs -r kill -9 2>/dev/null
+PORT=3012 APP_PASSWORD=test-pass CLAUDE_BIN=/nonexistent/claude node index.js > /tmp/${PWD##*/}_test_server_pw.log 2>&1 &
+PW_PID=$!
+sleep 1
+res=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3012/")
+assert_eq "パスワード無し → 401" "401" "$res"
+res=$(curl -s -o /dev/null -w "%{http_code}" -u "any:wrong" "http://localhost:3012/api/config")
+assert_eq "パスワード違い → 401" "401" "$res"
+res=$(curl -s -o /dev/null -w "%{http_code}" -u "any:test-pass" "http://localhost:3012/api/config")
+assert_eq "パスワード正しい → 200" "200" "$res"
+kill "$PW_PID" 2>/dev/null
+
 echo ""
 echo "結果: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ]
