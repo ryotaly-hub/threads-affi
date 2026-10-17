@@ -1,0 +1,17 @@
+{
+  "name": "threads-affi",
+  "version": "1.0.0",
+  "description": "Amazonアソシエイト用のThreads投稿内容を作成するアプリ",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "bash test.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
