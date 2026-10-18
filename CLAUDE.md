@@ -26,6 +26,8 @@ lib/auth.js           パスワード保護（Basic 認証。avatar-maker と同
 routes/index.js       API（/api/config, /api/trends, /api/prompt, /api/posts）
 lib/claude.js         Claude Code（claude -p）呼び出し（売れ筋の Web 検索・投稿文の作成）
 public/               画面（index.html / style.css / app.js）
+public/icons/         アプリアイコン（apple-touch-icon・192/512・favicon）。パスワード無しで配信する
+assets/icon-source.png  アイコンの元画像（generate-illustration で logo.png から作成）
 test.sh               curl ベースの API テスト
 intent-interview.md   intent.md（作業の意図）を作るインタビューの指示
 intent.md             作業の意図（5つの項目）

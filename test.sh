@@ -43,11 +43,16 @@ assert_eq "GET / title" "1" "$(echo "$body" | grep -c '<title>VANG SELECT Post d
 res=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/assets/logo.png")
 assert_eq "GET /assets/logo.png status" "200" "$res"
 
+# --- アイコン ---
+res=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/icons/apple-touch-icon.png")
+assert_eq "GET /icons/apple-touch-icon.png status" "200" "$res"
+assert_eq "GET /manifest.webmanifest short_name" "VANG SELECT" "$(curl -s "$BASE_URL/manifest.webmanifest" | jq -r .short_name)"
+
 # --- GET /api/config ---
 body=$(curl -s "$BASE_URL/api/config")
 assert_eq "GET /api/config available" "false" "$(echo "$body" | jq -c .available)"
 assert_eq "GET /api/config labels" '["ジャンル","ターゲット","紹介したい商品・サービス","口調"]' "$(echo "$body" | jq -c '[.variables[].label]')"
-assert_eq "GET /api/config placeholder" '{ターゲット（具体的な悩みを抱えた層）}' "$(echo "$body" | jq -r '.variables[1].placeholder')"
+assert_eq "GET /api/config placeholder" 'ターゲット（具体的な悩みを抱えた層）' "$(echo "$body" | jq -r '.variables[1].placeholder')"
 
 FILLED='{"genre":"美容","target":"毛穴に悩む20代","product":"$1 クレンジング","tone":"女子のタメ口"}'
 
@@ -56,11 +61,14 @@ res=$(curl -s -w "\n%{http_code}" -H "Content-Type: application/json" -d "$FILLE
 status=$(echo "$res" | tail -n 1)
 prompt=$(echo "$res" | sed '$d' | jq -r .prompt)
 assert_eq "POST /api/prompt status" "200" "$status"
-assert_eq "POST /api/prompt 変数" "1" "$(echo "$prompt" | grep -c '^- 紹介したい商品・サービス：\$1 クレンジング$')"
-assert_eq "POST /api/prompt 口調" "1" "$(echo "$prompt" | grep -c '口調は「女子のタメ口」を厳守')"
+assert_eq "POST /api/prompt 変数" "1" "$(echo "$prompt" | grep -c '^- 紹介したい商品・サービス：{\$1 クレンジング}$')"
+assert_eq "POST /api/prompt 口調" "1" "$(echo "$prompt" | grep -c '口調は「{女子のタメ口}」を厳守')"
 assert_eq "POST /api/prompt {} が残らない" "0" "$(echo "$prompt" | grep -c '{ジャンル}\|{口調}')"
 
-res=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" -d '{"genre":"{ジャンル}","target":"a","product":"b","tone":"c"}' "$BASE_URL/api/prompt")
+prompt=$(curl -s -H "Content-Type: application/json" -d '{"genre":"{美容}","target":"a","product":"b","tone":"c"}' "$BASE_URL/api/prompt" | jq -r .prompt)
+assert_eq "POST /api/prompt {} を二重にしない" "1" "$(echo "$prompt" | grep -c '^- ジャンル：{美容}$')"
+
+res=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" -d '{"genre":"ジャンル","target":"a","product":"b","tone":"c"}' "$BASE_URL/api/prompt")
 assert_eq "POST /api/prompt 初期文字のまま → 400" "400" "$res"
 
 # --- POST /api/posts ---
@@ -88,6 +96,8 @@ res=$(curl -s -o /dev/null -w "%{http_code}" -u "any:wrong" "http://localhost:30
 assert_eq "パスワード違い → 401" "401" "$res"
 res=$(curl -s -o /dev/null -w "%{http_code}" -u "any:test-pass" "http://localhost:3012/api/config")
 assert_eq "パスワード正しい → 200" "200" "$res"
+res=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3012/icons/apple-touch-icon.png")
+assert_eq "アイコンはパスワード無しで取れる" "200" "$res"
 kill "$PW_PID" 2>/dev/null
 
 echo ""

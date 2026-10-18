@@ -10,6 +10,10 @@ const password = process.env.APP_PASSWORD;
 // 無いときはこのパソコンからしか開けないようにする
 const host = password ? '0.0.0.0' : '127.0.0.1';
 
+// ホーム画面のアイコンは iPhone がパスワード無しで取りに来ることがあるため、先に返す（秘密ではない）
+app.use('/icons', express.static(path.join(__dirname, 'public', 'icons')));
+app.get('/manifest.webmanifest', (req, res) => res.sendFile(path.join(__dirname, 'public', 'manifest.webmanifest')));
+
 // ほかの処理より先にパスワードを確認する
 app.use(passwordGate(password));
 
