@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const { passwordGate } = require('./lib/auth');
+const { cors } = require('./lib/cors');
 const indexRouter = require('./routes/index');
 
 const app = express();
@@ -9,6 +10,8 @@ const password = process.env.APP_PASSWORD;
 // パスワードがあるときだけ、ほかの端末（Tailscale 経由のスマホなど）からの接続を受け付ける。
 // 無いときはこのパソコンからしか開けないようにする
 const host = password ? '0.0.0.0' : '127.0.0.1';
+
+app.use(cors());
 
 // ホーム画面のアイコンは iPhone がパスワード無しで取りに来ることがあるため、先に返す（秘密ではない）
 app.use('/icons', express.static(path.join(__dirname, 'public', 'icons')));

@@ -17,6 +17,14 @@ Amazonアソシエイト用のThreads投稿内容を作成するアプリ
   - **注意**: `test.sh` は最初にポート 3002 のプロセスを `kill -9` する。
   - 新しいエンドポイントを追加したら、`test.sh` に `assert_eq` を追加する。
 
+## GitHub Pages から使う
+
+https://ryotaly-hub.github.io/threads-affi/ で画面を開ける。売れ筋検索と投稿作成は、画面から Mac のサーバーを Tailscale 経由で呼んで行う。
+
+1. Tailscale の管理画面（DNS）で「HTTPS Certificates」を有効にする（初回だけ）
+2. Mac で `npm start` と `tailscale serve --bg 3002` を実行する（serve は一度設定すれば残る）
+3. Tailscale をオンにした端末で Pages を開き、接続先 `https://<Mac の名前>.ts.net` とパスワードを入れる（端末に保存される）
+
 ## スマホなど外から使う（Tailscale）
 
 1. Mac とスマホの両方に Tailscale を入れ、同じアカウントでログインする
