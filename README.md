@@ -24,6 +24,7 @@ https://ryotaly-hub.github.io/threads-affi/ で画面を開ける。売れ筋検
 1. Tailscale の管理画面（DNS）で「HTTPS Certificates」を有効にする（初回だけ）
 2. Mac で `npm start` と `tailscale serve --bg 3002` を実行する（serve は一度設定すれば残る）
 3. Tailscale をオンにした端末で Pages を開き、接続先 `https://<Mac の名前>.ts.net` とパスワードを入れる（端末に保存される）
+   - Chrome では最初に「ローカル ネットワークへのアクセス」の許可を求められるので、許可する（拒否したら、アドレスバー左のアイコンから許可し直す）
 
 ## スマホなど外から使う（Tailscale）
 

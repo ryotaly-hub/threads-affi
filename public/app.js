@@ -65,7 +65,7 @@ async function api(path, body) {
   try {
     res = await fetch(`${server.base}${path}`, { method: body ? 'POST' : 'GET', headers, body: body && JSON.stringify(body) });
   } catch {
-    throw new Error('Mac のサーバーにつながりません。Tailscale がオンか、Mac でアプリが動いているかを確かめてください。');
+    throw new Error('Mac のサーバーにつながりません。Tailscale がオンか、Mac でアプリが動いているかを確かめてください。Chrome では、アドレスバー左のアイコンから「ローカル ネットワーク」へのアクセスを許可してください。');
   }
   if (res.status === 401) throw new Error('パスワードが違います。');
   const data = await res.json().catch(() => ({}));
