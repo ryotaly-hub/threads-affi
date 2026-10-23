@@ -30,50 +30,12 @@ async function copy(text) {
   toast('コピーしました');
 }
 
-// ---- サーバーとの通信 ----
-// Mac のサーバーから開いたときは同じ場所の API を使う（パスワードはブラウザが送る）。
-// GitHub Pages から開いたときは、この端末に保存した Mac のサーバー（Tailscale の https URL）へパスワード付きで送る
-const SETTINGS_KEY = 'vang-select-server';
-let server = { base: '', password: '' };
-
-function loadSettings() {
-  try {
-    return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || null;
-  } catch {
-    return null;
-  }
-}
-
-function saveSettings(settings) {
-  try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-  } catch {
-    // 保存できない環境（プライベートブラウズなど）では、開いている間だけ使う
-  }
-}
-
-function authHeader(password) {
-  const bytes = new TextEncoder().encode(`user:${password}`);
-  return `Basic ${btoa(String.fromCharCode(...bytes))}`;
-}
-
-async function api(path, body) {
-  const headers = {};
-  if (server.password) headers.Authorization = authHeader(server.password);
-  if (body) headers['Content-Type'] = 'application/json';
-  let res;
-  try {
-    res = await fetch(`${server.base}${path}`, { method: body ? 'POST' : 'GET', headers, body: body && JSON.stringify(body) });
-  } catch {
-    throw new Error('Mac のサーバーにつながりません。Tailscale がオンか、Mac でアプリが動いているかを確かめてください。Chrome では、アドレスバー左のアイコンから「ローカル ネットワーク」へのアクセスを許可してください。');
-  }
-  if (res.status === 401) throw new Error('パスワードが違います。');
+async function postJson(path, body) {
+  const res = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `エラーが発生しました（${res.status}）`);
   return data;
 }
-
-const postJson = (path, body) => api(path, body);
 
 // ---- 1. 売れ筋検索 ----
 
@@ -254,76 +216,15 @@ async function generatePosts(e) {
 
 // ---- 初期化 ----
 
-// 同じ場所に API があるか（Mac のサーバーから開いたか）を確かめる
-async function sameOriginConfig() {
-  try {
-    const res = await fetch('api/config');
-    return res.ok ? await res.json() : null;
-  } catch {
-    return null;
-  }
-}
-
-function startApp(config) {
+async function init() {
+  const config = await fetch('api/config').then((r) => r.json());
   variables = config.variables;
   $('key-warning').hidden = config.available;
-  $('server-settings').hidden = true;
-  $('app').hidden = false;
-  if (!started) {
-    renderCategories();
-    renderForm();
-    $('search-btn').addEventListener('click', searchTrends);
-    $('post-form').addEventListener('submit', generatePosts);
-    $('prompt-btn').addEventListener('click', copyPrompt);
-    started = true;
-  }
-}
-let started = false;
-
-async function connect(settings) {
-  server = { base: settings.base.replace(/\/+$/, '') + '/', password: settings.password };
-  const config = await api('api/config');
-  saveSettings(settings);
-  $('server-label').textContent = server.base;
-  $('server-footer').hidden = false;
-  startApp(config);
-}
-
-function showSettings(message = '') {
-  const saved = loadSettings();
-  if (saved) {
-    $('server-url').value = saved.base;
-    $('server-password').value = saved.password;
-  }
-  $('app').hidden = true;
-  $('server-settings').hidden = false;
-  setStatus($('server-status'), message, message ? 'error' : '');
-}
-
-async function init() {
-  const local = await sameOriginConfig();
-  if (local) return startApp(local);
-
-  $('server-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const status = $('server-status');
-    setStatus(status, 'つないでいます…', 'loading');
-    try {
-      await connect({ base: $('server-url').value.trim(), password: $('server-password').value });
-      setStatus(status, '');
-    } catch (err) {
-      setStatus(status, err.message, 'error');
-    }
-  });
-  $('server-change').addEventListener('click', () => showSettings());
-
-  const saved = loadSettings();
-  if (!saved) return showSettings();
-  try {
-    await connect(saved);
-  } catch (err) {
-    showSettings(err.message);
-  }
+  renderCategories();
+  renderForm();
+  $('search-btn').addEventListener('click', searchTrends);
+  $('post-form').addEventListener('submit', generatePosts);
+  $('prompt-btn').addEventListener('click', copyPrompt);
 }
 
 init();

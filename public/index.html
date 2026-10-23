@@ -24,24 +24,7 @@
     Claude Code（<code>claude</code> コマンド）が見つからないため、売れ筋検索と投稿作成は使えません。Claude Code をインストールしてログインしてから、サーバーを起動し直してください（「プロンプトをコピー」は使えます）。
   </div>
 
-  <section class="card settings" id="server-settings" hidden>
-    <h2>Mac のサーバーにつなぐ</h2>
-    <p class="hint">売れ筋検索と投稿作成は、Mac で動いているアプリ（Claude Code）が行います。Tailscale をオンにして、Mac のサーバーの URL とパスワードを入れてください。この端末に保存され、次からは入力不要です。</p>
-    <form id="server-form">
-      <div class="field">
-        <label for="server-url">サーバーの URL</label>
-        <input type="url" id="server-url" placeholder="https://（Mac の名前）.ts.net" required>
-      </div>
-      <div class="field">
-        <label for="server-password">パスワード</label>
-        <input type="password" id="server-password" autocomplete="current-password" required>
-      </div>
-      <button class="primary" type="submit">保存してつなぐ</button>
-    </form>
-    <div id="server-status" class="status" aria-live="polite"></div>
-  </section>
-
-  <main id="app" hidden>
+  <main>
     <section class="card" id="step-trends">
       <h2><span class="num">1</span>売れ筋商品検索（Amazon以外）</h2>
       <p class="hint">AI が Web 検索で、ニュースやトレンド記事から今売れているものを推し量ります（Amazon のページは読み取りません）。Claude Code で動くので、Claude の契約の使用量を消費します。1〜3分かかります。</p>
@@ -76,11 +59,6 @@
       <div id="patterns"><p class="empty">まだ投稿はありません。</p></div>
     </section>
   </main>
-
-  <footer class="site-footer" id="server-footer" hidden>
-    接続先：<span id="server-label"></span>
-    <button type="button" class="link" id="server-change">変更する</button>
-  </footer>
 
   <div id="toast" class="toast" role="status" hidden></div>
   <script src="app.js"></script>

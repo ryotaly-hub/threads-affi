@@ -85,31 +85,12 @@ assert_eq "POST /api/trends Claude Code 無し → 503" "503" "$res"
 res=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/not-found")
 assert_eq "GET /not-found status" "404" "$res"
 
-# --- パスワード保護（別ポートで APP_PASSWORD 付きのサーバーを起動） ---
-lsof -ti:3012 | xargs -r kill -9 2>/dev/null
-PORT=3012 APP_PASSWORD=test-pass CLAUDE_BIN=/nonexistent/claude node index.js > /tmp/${PWD##*/}_test_server_pw.log 2>&1 &
-PW_PID=$!
-sleep 1
-res=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3012/")
-assert_eq "パスワード無し → 401" "401" "$res"
-res=$(curl -s -o /dev/null -w "%{http_code}" -u "any:wrong" "http://localhost:3012/api/config")
-assert_eq "パスワード違い → 401" "401" "$res"
-res=$(curl -s -o /dev/null -w "%{http_code}" -u "any:test-pass" "http://localhost:3012/api/config")
-assert_eq "パスワード正しい → 200" "200" "$res"
-res=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3012/icons/apple-touch-icon.png")
-assert_eq "アイコンはパスワード無しで取れる" "200" "$res"
-
-# --- GitHub Pages からの呼び出し（CORS） ---
-hdr=$(curl -s -o /dev/null -D - -X OPTIONS -H "Origin: https://ryotaly-hub.github.io" -H "Access-Control-Request-Method: POST" -H "Access-Control-Request-Headers: authorization,content-type" "http://localhost:3012/api/posts" | tr -d '\r')
-assert_eq "CORS 事前確認 status" "204" "$(echo "$hdr" | head -1 | awk '{print $2}')"
-assert_eq "CORS 事前確認 送り元" "https://ryotaly-hub.github.io" "$(echo "$hdr" | sed -n 's/^[Aa]ccess-[Cc]ontrol-[Aa]llow-[Oo]rigin: //p')"
-hdr=$(curl -s -o /dev/null -D - -H "Origin: https://ryotaly-hub.github.io" "http://localhost:3012/api/config" | tr -d '\r')
-assert_eq "CORS パスワード無し → 401 にも許可の印" "https://ryotaly-hub.github.io" "$(echo "$hdr" | sed -n 's/^[Aa]ccess-[Cc]ontrol-[Aa]llow-[Oo]rigin: //p')"
-res=$(curl -s -o /dev/null -w "%{http_code}" -H "Origin: https://ryotaly-hub.github.io" -u "any:test-pass" "http://localhost:3012/api/config")
-assert_eq "CORS パスワード付き → 200" "200" "$res"
-hdr=$(curl -s -o /dev/null -D - -X OPTIONS -H "Origin: https://evil.example" -H "Access-Control-Request-Method: POST" "http://localhost:3012/api/posts" | tr -d '\r')
-assert_eq "CORS ほかの送り元は許可しない" "0" "$(echo "$hdr" | grep -ci '^access-control-allow-origin')"
-kill "$PW_PID" 2>/dev/null
+# --- この Mac からだけ開ける（127.0.0.1 で待ち受け） ---
+LAN_IP=$(ipconfig getifaddr en0 2>/dev/null || hostname -I 2>/dev/null | awk '{print $1}')
+if [ -n "$LAN_IP" ]; then
+  res=$(curl -s -o /dev/null -m 3 -w "%{http_code}" "http://$LAN_IP:3002/")
+  assert_eq "LAN のアドレスからはつながらない" "000" "$res"
+fi
 
 echo ""
 echo "結果: $PASS passed, $FAIL failed"
