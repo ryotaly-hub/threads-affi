@@ -1,12 +1,12 @@
 #!/bin/bash
-# ~/Applications に「VANG SELECT.app」を作る（Dock・Launchpad・Spotlight から起動できる）。
+# ~/Applications に「VS-PostDraft.app」を作る（Dock・Launchpad・Spotlight から起動できる）。
 # アプリを開くと、サーバーが止まっていればバックグラウンドで起動し、Chrome のアプリウィンドウで画面を開く。
 # Chrome が無ければ既定のブラウザで開く。project-kickoff の scripts/install-app.sh と同じ仕組み。
 # 使い方: bash scripts/install-app.sh   （このリポジトリを移動したら、またはアイコンを差し替えたら再実行する）
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-APP="$HOME/Applications/VANG SELECT.app"
+APP="$HOME/Applications/VS-PostDraft.app"
 ICON_SRC="$PROJECT_DIR/assets/icon-source.png"
 
 if [ ! -f "$ICON_SRC" ]; then
@@ -32,8 +32,8 @@ cat > "$APP/Contents/Info.plist" <<'EOF'
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleName</key><string>VANG SELECT</string>
-  <key>CFBundleDisplayName</key><string>VANG SELECT</string>
+  <key>CFBundleName</key><string>VS-PostDraft</string>
+  <key>CFBundleDisplayName</key><string>VS-PostDraft</string>
   <key>CFBundleIdentifier</key><string>local.ryotaly.vang-select-post-draft</string>
   <key>CFBundleExecutable</key><string>VangSelect</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
@@ -56,7 +56,7 @@ LOG="\$HOME/Library/Logs/vang-select-post-draft.log"
 
 if ! curl -sf -o /dev/null "\${URL}api/config"; then
   if [ ! -d "\$PROJECT_DIR" ]; then
-    osascript -e 'display alert "VANG SELECT" message "プロジェクトのフォルダが見つかりません。scripts/install-app.sh を再実行してください。"'
+    osascript -e 'display alert "VS-PostDraft" message "プロジェクトのフォルダが見つかりません。scripts/install-app.sh を再実行してください。"'
     exit 1
   fi
   cd "\$PROJECT_DIR"
@@ -68,7 +68,7 @@ if ! curl -sf -o /dev/null "\${URL}api/config"; then
     sleep 0.2
   done
   if ! curl -sf -o /dev/null "\${URL}api/config"; then
-    osascript -e 'display alert "VANG SELECT" message "アプリを起動できませんでした。~/Library/Logs/vang-select-post-draft.log を確認してください。"'
+    osascript -e 'display alert "VS-PostDraft" message "アプリを起動できませんでした。~/Library/Logs/vang-select-post-draft.log を確認してください。"'
     exit 1
   fi
 fi
