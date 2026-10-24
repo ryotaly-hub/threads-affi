@@ -14,6 +14,7 @@ Amazonアソシエイト用のThreads投稿内容を作成するアプリ
 ## コマンド
 
 - **起動**: `npm start` → http://localhost:3002/
+- **Mac のアプリとして使う**: `bash scripts/install-app.sh` で `~/Applications/VANG SELECT.app` を作る。開くと、サーバーが止まっていれば裏で起動し（ログは `~/Library/Logs/vang-select-post-draft.log`）、Chrome のアプリウィンドウで開く。フォルダを移動したら、またはアイコンを差し替えたら再実行する。
 - **テスト**: `npm test`（= `bash test.sh`）。サーバーを自動で起動し、curl でエンドポイントを叩いて期待値と比較する。`curl` と `jq` が必要。
   - **注意**: `test.sh` は最初にポート 3002 のプロセスを `kill -9` する。
   - 新しいエンドポイントを追加したら、`test.sh` に `assert_eq` を追加する。
@@ -27,6 +28,7 @@ lib/claude.js         Claude Code（claude -p）呼び出し（売れ筋の Web 
 public/               画面（index.html / style.css / app.js）
 public/icons/         アプリアイコン（apple-touch-icon・192/512・favicon）
 assets/icon-source.png  アイコンの元画像（generate-illustration で logo.png から作成）
+scripts/install-app.sh  ~/Applications/VANG SELECT.app を作る（project-kickoff と同じ仕組み）
 test.sh               curl ベースの API テスト
 intent-interview.md   intent.md（作業の意図）を作るインタビューの指示
 intent.md             作業の意図（5つの項目）

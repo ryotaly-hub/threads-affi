@@ -9,6 +9,8 @@ Amazonアソシエイト用のThreads投稿内容を作成するアプリ
 
 ## 使い方
 
+**おすすめ**: 最初に1回 `bash scripts/install-app.sh` を実行すると、`~/Applications/VANG SELECT.app` ができる。Dock・Launchpad・Spotlight（「VANG」）から開くと、アプリが止まっていれば自動で起動して画面が開く（ターミナル不要）。
+
 画面の流れ：売れ筋検索（カテゴリ・季節を選ぶ）→ 候補を選んで条件入力 → 投稿3パターンと伸びる確率を表示 → 本文をコピーして自分で投稿。
 
 
