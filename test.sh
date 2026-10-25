@@ -52,9 +52,11 @@ assert_eq "GET /manifest.webmanifest short_name" "VANG SELECT" "$(curl -s "$BASE
 body=$(curl -s "$BASE_URL/api/config")
 assert_eq "GET /api/config available" "false" "$(echo "$body" | jq -c .available)"
 assert_eq "GET /api/config labels" '["ジャンル","ターゲット","紹介したい商品・サービス","口調"]' "$(echo "$body" | jq -c '[.variables[].label]')"
+assert_eq "GET /api/config 口調は10パターン" "10" "$(echo "$body" | jq '.variables[3].options | length')"
+assert_eq "GET /api/config 口調1" "親しみやすいお姉さん系" "$(echo "$body" | jq -r '.variables[3].options[0].name')"
 assert_eq "GET /api/config placeholder" 'ターゲット（具体的な悩みを抱えた層）' "$(echo "$body" | jq -r '.variables[1].placeholder')"
 
-FILLED='{"genre":"美容","target":"毛穴に悩む20代","product":"$1 クレンジング","tone":"女子のタメ口"}'
+FILLED='{"genre":"美容","target":"毛穴に悩む20代","product":"$1 クレンジング","tone":"1"}'
 
 # --- POST /api/prompt ---
 res=$(curl -s -w "\n%{http_code}" -H "Content-Type: application/json" -d "$FILLED" "$BASE_URL/api/prompt")
@@ -62,14 +64,20 @@ status=$(echo "$res" | tail -n 1)
 prompt=$(echo "$res" | sed '$d' | jq -r .prompt)
 assert_eq "POST /api/prompt status" "200" "$status"
 assert_eq "POST /api/prompt 変数" "1" "$(echo "$prompt" | grep -c '^- 紹介したい商品・サービス：{\$1 クレンジング}$')"
-assert_eq "POST /api/prompt 口調" "1" "$(echo "$prompt" | grep -c '口調は「{女子のタメ口}」を厳守')"
+assert_eq "POST /api/prompt 口調" "1" "$(echo "$prompt" | grep -c '口調は「{親しみやすいお姉さん系}」を厳守')"
+assert_eq "POST /api/prompt 口調の変数" "1" "$(echo "$prompt" | grep -c '^- 口調：{親しみやすいお姉さん系}$')"
+assert_eq "POST /api/prompt 口調パターンの指示" "1" "$(echo "$prompt" | grep -c '^## 口調パターン（1. 親しみやすいお姉さん系）$')"
+assert_eq "POST /api/prompt 口調パターンは出力形式の前" "1" "$(echo "$prompt" | awk '/^## 口調パターン/{p=NR} /^## 出力形式/{o=NR} END{print (p && o && p<o) ? 1 : 0}')"
 assert_eq "POST /api/prompt {} が残らない" "0" "$(echo "$prompt" | grep -c '{ジャンル}\|{口調}')"
 
-prompt=$(curl -s -H "Content-Type: application/json" -d '{"genre":"{美容}","target":"a","product":"b","tone":"c"}' "$BASE_URL/api/prompt" | jq -r .prompt)
+prompt=$(curl -s -H "Content-Type: application/json" -d '{"genre":"{美容}","target":"a","product":"b","tone":"10"}' "$BASE_URL/api/prompt" | jq -r .prompt)
 assert_eq "POST /api/prompt {} を二重にしない" "1" "$(echo "$prompt" | grep -c '^- ジャンル：{美容}$')"
 
-res=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" -d '{"genre":"ジャンル","target":"a","product":"b","tone":"c"}' "$BASE_URL/api/prompt")
+res=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" -d '{"genre":"ジャンル","target":"a","product":"b","tone":"1"}' "$BASE_URL/api/prompt")
 assert_eq "POST /api/prompt 初期文字のまま → 400" "400" "$res"
+
+res=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" -d '{"genre":"a","target":"a","product":"b","tone":"女子のタメ口"}' "$BASE_URL/api/prompt")
+assert_eq "POST /api/prompt 10パターン以外の口調 → 400" "400" "$res"
 
 # --- POST /api/posts ---
 body=$(curl -s -H "Content-Type: application/json" -d '{"genre":"美容"}' "$BASE_URL/api/posts")

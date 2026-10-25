@@ -107,12 +107,33 @@ async function searchTrends() {
 
 // ---- 2. 条件入力 ----
 
+// 選択肢のある項目（口調）はプルダウンにし、選んだパターンのペルソナとトーンを下に出す
+function fieldHtml(v) {
+  if (!v.options) {
+    return `<input type="text" id="f-${v.key}" name="${v.key}" placeholder="${escapeHtml(v.placeholder)}">`;
+  }
+  return `
+    <select id="f-${v.key}" name="${v.key}">
+      <option value="">${escapeHtml(v.placeholder)}</option>
+      ${v.options.map((o) => `<option value="${escapeHtml(o.id)}">${escapeHtml(`${o.id}. ${o.name}（${o.target}）`)}</option>`).join('')}
+    </select>
+    <p class="option-desc" id="d-${v.key}" hidden></p>`;
+}
+
 function renderForm() {
   $('post-form').innerHTML = variables.map((v) => `
     <div class="field">
       <label for="f-${v.key}">${escapeHtml(v.label)}</label>
-      <input type="text" id="f-${v.key}" name="${v.key}" placeholder="${escapeHtml(v.placeholder)}">
+      ${fieldHtml(v)}
     </div>`).join('');
+  for (const v of variables.filter((x) => x.options)) {
+    $(`f-${v.key}`).addEventListener('change', (e) => {
+      const o = v.options.find((x) => x.id === e.target.value);
+      const desc = $(`d-${v.key}`);
+      desc.hidden = !o;
+      desc.innerHTML = o ? `<b>ペルソナ：</b>${escapeHtml(o.persona)}<br><b>トーン：</b>${escapeHtml(o.tone)}` : '';
+    });
+  }
 }
 
 function fillForm(values) {
