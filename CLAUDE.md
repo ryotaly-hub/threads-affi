@@ -25,6 +25,7 @@ Amazonアソシエイト用のThreads投稿内容を作成するアプリ
 index.js              Express 本体（public/ と assets/ を配信。127.0.0.1 だけで待ち受け）
 routes/index.js       API（/api/config, /api/trends, /api/prompt, /api/posts）
 lib/claude.js         Claude Code（claude -p）呼び出し（売れ筋の Web 検索・投稿文の作成）
+lib/og-image.js       売れ筋の候補の商品画像（Amazon 以外のページの og:image）を探す
 lib/tones.js          口調の10パターン（条件入力のプルダウンと、プロンプトに足す口調指定・文脈構成）
 public/               画面（index.html / style.css / app.js）
 public/icons/         アプリアイコン（apple-touch-icon・192/512・favicon）

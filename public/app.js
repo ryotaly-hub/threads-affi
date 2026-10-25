@@ -64,6 +64,7 @@ function renderTrends(data) {
     <div class="candidates">
       ${candidates.map((c, i) => `
         <article class="candidate">
+          ${/^https?:\/\//.test(c.image || '') ? `<img class="candidate-image" src="${escapeHtml(c.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}
           <div class="candidate-head">
             <span class="tag">${escapeHtml(c.category)}</span>
             <strong>${escapeHtml(c.product)}</strong>
@@ -71,6 +72,7 @@ function renderTrends(data) {
           </div>
           <p class="reason"><b>今売れている理由：</b>${escapeHtml(c.reason)}</p>
           <p class="target">ターゲット：${escapeHtml(c.target)}</p>
+          ${/^https?:\/\//.test(c.product_url || '') ? `<p class="sources">商品ページ：<a href="${escapeHtml(c.product_url)}" target="_blank" rel="noopener">${escapeHtml(new URL(c.product_url).hostname)}</a></p>` : ''}
           ${Array.isArray(c.sources) && c.sources.length ? `<p class="sources">根拠：${c.sources
             .filter((u) => /^https?:\/\//.test(u))
             .map((u) => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener">${escapeHtml(new URL(u).hostname)}</a>`).join('')}</p>` : ''}
