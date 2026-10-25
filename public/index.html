@@ -3,62 +3,131 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VANG SELECT Post draft</title>
+  <title>カテゴリーから厳選したおすすめ商品 by Threads</title>
+  <link rel="icon" href="icons/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="apple-mobile-web-app-title" content="VANG SELECT">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0b3d91">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="site-header">
-    <img src="assets/logo.png" alt="VANG SELECT" class="logo">
-    <div>
-      <h1>VANG SELECT <span>Post draft</span></h1>
-      <p class="lead">売れ筋を調べて、Threads の紹介投稿を3パターン作る</p>
-    </div>
-  </header>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="#top" id="top">
+        <img src="vang-logo.png" alt="VANG SELECT" width="40" height="40">
+        <span>カテゴリーから厳選したおすすめ商品</span>
+      </a>
+      <nav aria-label="ページ内リンク">
+        <a href="#step-trends">売れ筋を調べる</a>
+        <a href="#step-input">条件入力</a>
+        <a href="#step-patterns">パターン表示</a>
+      </nav>
+      <a class="pill-link" href="https://www.threads.com/" target="_blank" rel="noopener">Threadsを開く</a>
+    </header>
 
-  <div id="key-warning" class="notice" hidden>
-    Claude Code（<code>claude</code> コマンド）が見つからないため、売れ筋検索と投稿作成は使えません。Claude Code をインストールしてログインしてから、サーバーを起動し直してください（「プロンプトをコピー」は使えます）。
-  </div>
-
-  <main>
-    <section class="card" id="step-trends">
-      <h2><span class="num">1</span>売れ筋商品検索（Amazon以外）</h2>
-      <p class="hint">AI が Web 検索で、ニュースやトレンド記事から今売れているものを推し量ります（Amazon のページは読み取りません）。Claude Code で動くので、Claude の契約の使用量を消費します。1〜3分かかります。</p>
-
-      <h3>紹介商品のカテゴリ</h3>
-      <div class="chips" id="categories" role="radiogroup" aria-label="カテゴリ"></div>
-      <input type="text" id="category-other" class="other" placeholder="その他のカテゴリを入力（例：ペット用品）">
-
-      <label class="toggle">
-        <input type="checkbox" id="season" checked>
-        <span>季節を考慮する（今日の日付から、季節・行事で伸びているものを優先）</span>
-      </label>
-
-      <button class="primary" id="search-btn">売れ筋を調べる</button>
-      <div id="trends-status" class="status" aria-live="polite"></div>
-      <div id="trends-result"></div>
-    </section>
-
-    <section class="card" id="step-input">
-      <h2><span class="num">2</span>条件入力</h2>
-      <p class="hint">売れ筋レポートの「この商品で投稿を作る」を押すと自動で入ります。直接入力もできます。</p>
-      <form id="post-form"></form>
-      <div class="actions">
-        <button class="primary" id="generate-btn" type="submit" form="post-form">投稿を3パターン作る</button>
-        <button class="secondary" id="prompt-btn" type="button">プロンプトをコピー</button>
+    <div class="hero-wrap">
+      <div class="hero">
+        <img class="hero-badge" src="vang-logo.png" alt="" width="72" height="72">
+        <div class="hero-text">
+          <div class="eyebrow">Pick up items</div>
+          <h1>カテゴリーから厳選した<br>おすすめ商品
+            <span class="by">by <img src="threads-logo.png" alt="Threads" width="172" height="34"></span>
+          </h1>
+          <p>カテゴリーを選ぶだけで、今売れているものを Web 検索で調べ、Threads の紹介投稿を3パターン作ります。口調は10パターンから選べます。</p>
+          <div class="hero-actions">
+            <a class="btn-hero" href="#step-trends">売れ筋を調べる</a>
+            <a class="btn-ghost" href="#step-input">直接入力する</a>
+          </div>
+        </div>
       </div>
-      <div id="posts-status" class="status" aria-live="polite"></div>
-    </section>
+    </div>
 
-    <section class="card" id="step-patterns">
-      <h2><span class="num">3</span>パターン表示</h2>
-      <div id="patterns"><p class="empty">まだ投稿はありません。</p></div>
-    </section>
-  </main>
+    <div class="features">
+      <div class="feature">
+        <div class="num">01</div>
+        <h3>売れ筋を Web 検索</h3>
+        <p>ニュースやトレンド記事から、今売れているものを推し量ります</p>
+      </div>
+      <div class="feature">
+        <div class="num">02</div>
+        <h3>10パターンの口調</h3>
+        <p>口調と文脈構成を選んで、160〜200字の投稿文に整えます</p>
+      </div>
+      <div class="feature">
+        <div class="num">03</div>
+        <h3>3パターンを比べてコピー</h3>
+        <p>予想反応率と採点を見比べて、ワンクリックでコピーできます</p>
+      </div>
+    </div>
+
+    <div class="inner">
+      <div id="key-warning" class="notice" hidden>
+        Claude Code（<code>claude</code> コマンド）が見つからないため、売れ筋検索と投稿作成は使えません。Claude Code をインストールしてログインしてから、サーバーを起動し直してください（「プロンプトをコピー」は使えます）。
+      </div>
+
+      <section class="block" id="step-trends">
+        <div class="section-head">
+          <div class="eyebrow">Step 1 · Trends</div>
+          <h2>売れ筋商品検索（Amazon以外）</h2>
+          <p>AI が Web 検索で、ニュースやトレンド記事から今売れているものを推し量ります（Amazon のページは読み取りません）。Claude Code で動くので、Claude の契約の使用量を消費します。1〜3分かかります。</p>
+        </div>
+        <div class="panel">
+          <h3>紹介商品のカテゴリ</h3>
+          <div class="chips" id="categories" role="radiogroup" aria-label="カテゴリ"></div>
+          <input type="text" id="category-other" class="other" placeholder="その他のカテゴリを入力（例：ペット用品）">
+
+          <label class="toggle">
+            <input type="checkbox" id="season" checked>
+            <span>季節を考慮する（今日の日付から、季節・行事で伸びているものを優先）</span>
+          </label>
+
+          <div class="actions center">
+            <button class="primary" id="search-btn">売れ筋を調べる</button>
+          </div>
+          <div id="trends-status" class="status" aria-live="polite"></div>
+        </div>
+        <div id="trends-result"></div>
+      </section>
+
+      <section class="block" id="step-input">
+        <div class="section-head">
+          <div class="eyebrow">Step 2 · Conditions</div>
+          <h2>条件入力</h2>
+          <p>売れ筋レポートの「この商品で投稿を作る」を押すと自動で入ります。直接入力もできます。</p>
+        </div>
+        <div class="panel">
+          <form id="post-form"></form>
+          <div class="actions center">
+            <button class="primary" id="generate-btn" type="submit" form="post-form">投稿を3パターン作る</button>
+            <button class="secondary" id="prompt-btn" type="button">プロンプトをコピー</button>
+          </div>
+          <div id="posts-status" class="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="block" id="step-patterns">
+        <div class="section-head">
+          <div class="eyebrow">Step 3 · Patterns</div>
+          <h2>パターン表示</h2>
+        </div>
+        <div id="patterns"><p class="empty">まだ投稿はありません。</p></div>
+      </section>
+    </div>
+
+    <footer>
+      <div class="footer-line"></div>
+      <div class="footer-brand">
+        <img class="vang" src="vang-logo.png" alt="VANG SELECT" width="36" height="36">
+        <span>カテゴリーから厳選したおすすめ商品 by</span>
+        <img class="threads" src="threads-logo.png" alt="Threads" width="91" height="18">
+      </div>
+      <p class="footer-note">「Threads」のロゴは Meta Platforms, Inc. のもので、このページは Meta の公式サービスではありません。</p>
+      <div class="footer-bar">VANG SELECT</div>
+    </footer>
+  </div>
 
   <div id="toast" class="toast" role="status" hidden></div>
   <script src="app.js"></script>

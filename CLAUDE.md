@@ -14,7 +14,7 @@ Amazonアソシエイト用のThreads投稿内容を作成するアプリ
 ## コマンド
 
 - **起動**: `npm start` → http://localhost:3002/
-- **Mac のアプリとして使う**: `bash scripts/install-app.sh` で `~/Applications/VS-PostDraft.app` を作る（Mac のアプリ名は VS-PostDraft。画面のタイトル「VANG SELECT Post draft」は Threads アカウント名に合わせたもので、そのまま）。開くと、サーバーが止まっていれば裏で起動し（ログは `~/Library/Logs/vang-select-post-draft.log`）、Chrome のアプリウィンドウで開く。フォルダを移動したら、またはアイコンを差し替えたら再実行する。
+- **Mac のアプリとして使う**: `bash scripts/install-app.sh` で `~/Applications/VS-PostDraft.app` を作る（Mac のアプリ名は VS-PostDraft。画面のタイトルは「カテゴリーから厳選したおすすめ商品 by Threads」）。開くと、サーバーが止まっていれば裏で起動し（ログは `~/Library/Logs/vang-select-post-draft.log`）、Chrome のアプリウィンドウで開く。フォルダを移動したら、またはアイコンを差し替えたら再実行する。
 - **テスト**: `npm test`（= `bash test.sh`）。サーバーを自動で起動し、curl でエンドポイントを叩いて期待値と比較する。`curl` と `jq` が必要。
   - **注意**: `test.sh` は最初にポート 3002 のプロセスを `kill -9` する。
   - 新しいエンドポイントを追加したら、`test.sh` に `assert_eq` を追加する。
@@ -29,7 +29,11 @@ lib/og-image.js       売れ筋の候補の商品画像（Amazon 以外のペー
 lib/tones.js          口調の10パターン（条件入力のプルダウンと、プロンプトに足す口調指定・文脈構成）
 public/               画面（index.html / style.css / app.js）
 public/icons/         アプリアイコン（apple-touch-icon・192/512・favicon）
-assets/icon-source.png  アイコンの元画像（generate-illustration で logo.png から作成）
+public/hero.jpg・vang-logo.png・threads-logo.png  画面用の画像
+assets/icon-source.png  アイコンの元画像（threads-note-archive のアイコンを generate-illustration で青に変えたもの）
+assets/hero-source.png  ヒーロー画像の元（threads-note-archive の hero-source.png を generate-illustration で青に変えたもの）
+assets/threads-logo-source.png  Threads ロゴの元（白地に黒。透過にして public/threads-logo.png にする）
+scripts/make_icons.py  assets/icon-source.png からアイコン一式を public/icons/ に書き出す（uv run で動かす）
 scripts/install-app.sh  ~/Applications/VS-PostDraft.app を作る（project-kickoff と同じ仕組み）
 test.sh               curl ベースの API テスト
 intent-interview.md   intent.md（作業の意図）を作るインタビューの指示
@@ -60,6 +64,8 @@ assets/               画像などの素材
 - `intent.md` が無いときに作りたいものの話を始められたら、`intent-interview.md` の手順でインタビューして `intent.md` を作る。
 
 ## 注意事項
+
+- 画面のデザインは threads-note-archive とお揃い（構成・部品は同じで、イメージカラーを赤から青にしたもの）。片方のレイアウトを大きく変えたら、もう片方も合わせるか検討する。
 
 - 口調は `lib/tones.js` の10パターンから選ぶ（`docs/口調パターン.md` と同じ内容。片方を直したらもう片方も直す）。選んだパターンの口調指定と文脈構成（6段階）を「## 出力形式」の前に足す。文字数（160〜200字）と改行ルールはひな型どおり守り、6段階は目安にする（4文の型には厳密に合わせない）。
 - 投稿文は `docs/ひな型_スレッド投稿プロンプト.md` をそのまま使って作る。ひな型を直したら、画面の読み取り（`public/app.js` の `parsePatterns`）が出力形式に合っているか確かめる。

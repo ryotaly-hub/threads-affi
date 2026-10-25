@@ -1,10 +1,10 @@
 {
-  "name": "VANG SELECT Post draft",
+  "name": "カテゴリーから厳選したおすすめ商品 by Threads",
   "short_name": "VANG SELECT",
   "start_url": "./",
   "display": "browser",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#e3edf8",
+  "theme_color": "#0b3d91",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }

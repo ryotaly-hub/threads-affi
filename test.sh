@@ -37,7 +37,7 @@ res=$(curl -s -w "\n%{http_code}" "$BASE_URL/")
 status=$(echo "$res" | tail -n 1)
 body=$(echo "$res" | sed '$d')
 assert_eq "GET / status" "200" "$status"
-assert_eq "GET / title" "1" "$(echo "$body" | grep -c '<title>VANG SELECT Post draft</title>')"
+assert_eq "GET / title" "1" "$(echo "$body" | grep -c '<title>カテゴリーから厳選したおすすめ商品 by Threads</title>')"
 
 # --- ロゴ ---
 res=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/assets/logo.png")
